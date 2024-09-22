@@ -172,26 +172,10 @@ $(function(){
     	set = localStorage.getItem('preset');
     	$("#answer").keydown(function(event){
         	var keyCode = event.keyCode;
-        	if(!event.shiftKey && set==2){
-            if(keyCode==85){
-               var cut=$("#answer").val().slice(0,-1)
-        			$("#answer").val(cut);
-        			if(str!= $("#answer").val()){
-                  var tomato = str.slice(0, $("#answer").val().length)
-                  if(tomato!= $("#answer").val()){
-                     $('#mcheck').text('ミスがあります');
-                  }
-                  else{
-                     $('#mcheck').text('');
-                  }
-               }
-               return false;
-            }
-         }
-         else if( keyCode==27 ){
-            location.reload();
-         }
- 	 	});
+        	if( keyCode==27 ){
+            		location.reload();
+         	}
+ 	 });
     });
     $('#stop').click(function(){
   		location.reload()
