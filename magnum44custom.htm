@@ -1,0 +1,331 @@
+<html>
+<head>
+<script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
+<script type='text/javascript'>
+window.onload = function() {
+	$('#answer').attr('readonly',true);
+	$('#start').focus();
+	function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+	}
+	var set = localStorage.getItem('preset');
+	let array_omote = []
+	let array_ura = []
+	if(set==1 || !set){
+		set=1
+		localStorage.setItem('preset', '1');
+		array_omote = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
+		array_ura = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
+	}
+	else if(set==2){
+		array_seion = [
+                     "あ","い","う","え","お",
+                     "か","き","く","け","こ", "が","ぎ","ぐ","げ","ご",
+                     "さ","し","す","せ","そ", "ざ","じ","ず","ぜ","ぞ",
+                     "た","ち","つ","て","と", "だ","ぢ","づ","で","ど",
+                     "な","に","ぬ","ね","の",
+                     "は","ひ","ふ","へ","ほ", "ば","び","ぶ","べ","ぼ", "ぱ","ぴ","ぷ","ぺ","ぽ",
+                     "ま","み","む","め","も",
+                     "や","ゆ","よ",
+                     "ら","り","る","れ","ろ",
+                     "わ","を","ん"
+                    ]
+
+
+		array_youon = [
+                     "きゃ","きゅ","きょ", "ぎゃ","ぎゅ","ぎょ", 
+                     "しゃ","しゅ","しょ", "じゃ","じゅ","じょ", 
+                     "ちゃ","ちゅ","ちょ", "ぢゃ","ぢゅ","ぢょ",
+                     "にゃ","にゅ","にょ",
+                     "ひゃ","ひゅ","ひょ", "びゃ","びゅ","びょ", "ぴゃ","ぴゅ","ぴょ",
+                     "みゃ","みゅ","みょ",
+                     "りゃ","りゅ","りょ",
+                     "しぇ","じぇ",
+                     "ちぇ",
+                     "つぁ","つぇ","つぉ",
+                     "てぃ","でぃ",
+                     "でゅ",
+                     "ふぁ","ふぃ","ふぇ","ふぉ",
+                     "いぇ",
+                     "うぃ","うぇ","うぉ", "ヴぁ","ヴぃ","ヴ","ヴぇ","ヴぉ",
+                     "ヴゅ",
+                     "くぁ","くぃ","くぇ","くぉ", "ぐぉ",
+                     "つぃ",
+                     "てゅ",
+                     "とぅ","どぅ",
+                     "ふゅ"
+                  ] 
+
+		array_hisokuon = [
+                     "あ","い","う","え","お",
+                     "な","に","ぬ","ね","の",
+                     "や","ゆ","よ",
+                     "ん",
+                     "にゃ","にゅ","にょ",
+                    ]
+
+      array_mikakutei= [ "ｂ","ｃ","ｄ","ｆ","ｇ","ｈ","ｊ","ｋ","ｌ","ｍ","ｎ","ｐ","ｑ","ｒ","ｓ","ｔ","ｖ","ｗ","ｘ","ｙ","ｚ"]
+
+	}
+	else{
+		array_omote = ["1","2","3","4","5","6","7","8","9","0"]
+	}
+	array_omote = array_omote.filter(Boolean);
+	array_ura = array_ura.filter(Boolean);
+	var str = '';
+	var tmp = '';
+   var prev = '';
+	var train = 0
+	var maxTypingLength = 44
+	shuffleArray(array_omote)
+	shuffleArray(array_ura)
+	while (train < maxTypingLength) {
+      var num;
+      if( set!=2 ){
+		   num = Math.floor(Math.random() * 4);
+         if(num==1 && set!=3){
+            num = Math.floor(Math.random() * array_ura.length);
+            tmp= array_ura[num]
+         }
+         else{
+            num = Math.floor(Math.random() * array_omote.length);
+            tmp= array_omote[num]
+         }
+      }
+      else if( set=2 ){
+		   num = Math.floor(Math.random() * 100);
+
+         if( num < 20 && prev != "っ" ){
+            tmp = "っ";
+         }
+         else {
+            do{
+               num = Math.floor(Math.random() * 100);
+               if( num < 20 && train != maxTypingLength - 1  ){
+                  num = Math.floor(Math.random() * array_youon.length);
+                  tmp= array_youon[num]
+               }
+               else{
+                  num = Math.floor(Math.random() * array_seion.length);
+                  tmp= array_seion[num]
+               }
+            }while( prev == "っ" && array_hisokuon.includes( tmp ) );
+         }
+      }
+
+      train = train + tmp.length 
+		str = str + tmp
+      prev = tmp; 
+
+		if (train == maxTypingLength) {
+    		break;
+ 		}
+
+      if( set!=2 ){
+         num = Math.floor(Math.random() * (array_omote.length+array_ura.length));
+         if(num==1){
+            str = str + '空'
+            train++
+         }
+      }
+	}
+	sessionStorage.setItem('magnum', str);
+	let champ = 0
+	if(set==1){
+    	champ = localStorage.getItem('record1');
+    	if(champ>0){
+			$('#record').text("あなたの自己記録（デフォルト）は"+champ/1000+"秒です");
+		}
+    }
+    else if(set==2){
+    	champ = localStorage.getItem('record2');
+    	if(champ>0){
+			$('#record').text("あなたの自己記録（ひらがな）は"+champ/1000+"秒です");
+		}
+    }
+    else{
+    	champ = localStorage.getItem('record3');
+    	if(champ>0){
+			$('#record').text("あなたの自己記録（数字）は"+champ/1000+"秒です");
+		}
+    }
+}
+$(function(){
+    $('#start').click(function(){
+  		let str = sessionStorage.getItem('magnum');
+    	$('#odai').text(str);
+
+  		str = str.replace(/空/g, " ");
+
+  		sessionStorage.setItem('magnum', str);
+    	$('#answer').attr('readonly',false);
+    	var holster = Date.now()
+    	sessionStorage.setItem('start', holster);
+    	$(this).hide()
+    	$(this).nextAll().hide();
+    	$('#stop,#mcheck').show();
+    	$('#answer').focus();
+    	set = localStorage.getItem('preset');
+    	$("#answer").keydown(function(event){
+        	var keyCode = event.keyCode;
+        	if(!event.shiftKey && set==2){
+            if(keyCode==85){
+               var cut=$("#answer").val().slice(0,-1)
+        			$("#answer").val(cut);
+        			if(str!= $("#answer").val()){
+                  var tomato = str.slice(0, $("#answer").val().length)
+                  if(tomato!= $("#answer").val()){
+                     $('#mcheck').text('ミスがあります');
+                  }
+                  else{
+                     $('#mcheck').text('');
+                  }
+               }
+               return false;
+            }
+         }
+         else if( keyCode==27 ){
+            location.reload();
+         }
+ 	 	});
+    });
+    $('#stop').click(function(){
+  		location.reload()
+    });
+    $('#setting').click(function(){
+  		$('#trident').show();
+    });
+    $('#trident1').click(function(){
+  		alert('デフォルトに変更しました');
+  		localStorage.setItem('preset', '1');
+  		location.reload()
+    });
+    $('#trident2').click(function(){
+  		alert('ひらがなに変更しました');
+  		localStorage.setItem('preset', '2');
+  		location.reload()
+    });
+    $('#trident3').click(function(){
+  		alert('数字に変更しました');
+  		localStorage.setItem('preset', '3');
+  		location.reload()
+    });
+    $("#answer").on({
+        "input" : function(e) {
+         var set = localStorage.getItem('preset');
+        	var str_correct = sessionStorage.getItem('magnum');
+         var str_input= $(this).val()
+
+        	if(str_correct!=str_input){
+
+            if(set==2){
+               while( str_input.length != 0 ){
+                  if( array_mikakutei.includes( str_input.slice( -1 ) ) ){
+                     str_input = str_input.slice( 0, -1 );
+                  }
+                  else{
+                     break;
+                  }
+               }
+            }
+
+            str_comp = str_correct.slice(0,str_input.length)
+
+            if( str_input != str_comp ){
+            		$('#mcheck').text('ミスがあります');
+            	}
+            	else{
+            		$('#mcheck').text('');
+            	}
+            }
+            else{
+            	holster = Date.now()
+               sessionStorage.setItem('end', holster);
+               var time_start = sessionStorage.getItem('start');
+               var time_end = sessionStorage.getItem('end');
+               var record = time_end - time_start
+               if(set==1){
+                  champ = localStorage.getItem('record1');
+               }
+               else if(set==2){
+                  champ = localStorage.getItem('record2');
+               }
+               else{
+                  champ = localStorage.getItem('record3');
+               }
+               if(record>champ){
+                  if(!champ){
+                     if(set==1){
+                        localStorage.setItem('record1', record);
+                     }
+                     else if(set==2){
+                        localStorage.setItem('record2', record);
+                     }
+                     else{
+                        localStorage.setItem('record3', record);
+                     }
+                  }
+                  var result = window.confirm('あなたのタイムは' + record / 1000 +'秒です');
+                  if(result){
+                     location.reload()
+                  }
+               }
+               else{
+                  if(set==1){
+                     localStorage.setItem('record1', record);
+                  }
+                  else if(set==2){
+                     localStorage.setItem('record2', record);
+                  }
+                  else{
+                     localStorage.setItem('record3', record);
+                  }
+                  alert('自己記録更新です')
+                  var result = window.confirm('あなたのタイムは' + record / 1000 +'秒です');
+                  if(result){
+                     location.reload()
+                  }
+               }
+    			
+            }
+        }
+	});
+});
+</script>
+<style type="text/css">
+#odai{
+	overflow-wrap: break-word;
+}
+#mcheck{
+	color:#ff0000;
+}
+</style>
+</head>
+<body>
+<div style="text-align: center;">
+<br>
+<br>
+<h1>４４マグナム改</h1>
+<br>
+<h1 id="odai">ここにお題が表示されます</h1>
+<br>
+<input type="text" id="answer" style="width: 80%; font-size: 24px;">
+<br>
+<br>
+<br>
+<input type="button" id="start" value="開始" style="height:48px;width:48px;margin-right:16px">
+<input type="button" id="stop" value="中断" style="height:48px;width:48px;margin-right:16px;display:none;">
+<input type="button" id="setting" value="設定" style="height:48px;width:48px;margin-right:16px">
+<br>
+<br>
+<p id="mcheck"></p>
+<p id="record"></p>
+<p id="trident" style="display:none;"><a href="#" id="trident1" style="margin-right:16px">デフォルト</a><a href='#' id="trident2" style="margin-right:16px">ひらがな</a><a href='#'  id="trident3" style="margin-right:16px">数字</a></p>
+<a href="https://jigendaddy.github.io/magnum44/magnum44_0.1.3.htm">本家様はこちら</a>
+</div>
+</body>
+</html>
