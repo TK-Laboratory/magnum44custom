@@ -3,7 +3,7 @@
 <script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
 <script type='text/javascript'>
 window.onload = function() {
-	$('#answer').attr('readonly',true);
+	$('#answer').attr('disabled',true);
 	$('#start').focus();
 	function shuffleArray(array) {
         for (let i = array.length - 1; i > 0; i--) {
@@ -154,15 +154,43 @@ window.onload = function() {
 		}
     }
 }
+
+document.addEventListener('DOMContentLoaded', (event) => {
+    const answer = document.getElementById('answer');
+
+    //マウスイベント監視
+    answer.addEventListener('dragover', (event) => {
+  		  //alert('ドラッグ操作はできません');
+        event.preventDefault();
+    });
+
+    // ドロップイベントを無効化する
+    answer.addEventListener('drop', (event) => {
+  		  //alert('ドロップ操作はできません');
+        event.preventDefault();
+    });
+
+    // キーイベント監視
+    answer.addEventListener('keydown', (event) => {
+        	if( event.keyCode==27 ){ //Escで中断
+            location.reload();
+         }
+        else if( event.ctrlKey ){ //Ctrl + ～ 無効化
+  		     //alert('Ctrlキーを用いたショートカットキーは使用できません');
+           event.preventDefault();
+        }
+    });
+});
+
 $(function(){
-    $('#start').click(function(){
+   $('#start').click(function(){
   		let str = sessionStorage.getItem('magnum');
     	$('#odai').text(str);
 
   		str = str.replace(/空/g, " ");
 
   		sessionStorage.setItem('magnum', str);
-    	$('#answer').attr('readonly',false);
+    	$('#answer').attr('disabled',false);
     	var holster = Date.now()
     	sessionStorage.setItem('start', holster);
     	$(this).hide()
@@ -170,36 +198,30 @@ $(function(){
     	$('#stop,#mcheck').show();
     	$('#answer').focus();
     	set = localStorage.getItem('preset');
-    	$("#answer").keydown(function(event){
-        	var keyCode = event.keyCode;
-        	if( keyCode==27 ){
-            		location.reload();
-         	}
- 	 });
-    });
-    $('#stop').click(function(){
+   });
+   $('#stop').click(function(){
   		location.reload()
-    });
-    $('#setting').click(function(){
+   });
+   $('#setting').click(function(){
   		$('#trident').show();
-    });
-    $('#trident1').click(function(){
+   });
+   $('#trident1').click(function(){
   		alert('デフォルトに変更しました');
   		localStorage.setItem('preset', '1');
   		location.reload()
-    });
-    $('#trident2').click(function(){
+   });
+   $('#trident2').click(function(){
   		alert('ひらがなに変更しました');
   		localStorage.setItem('preset', '2');
   		location.reload()
-    });
-    $('#trident3').click(function(){
+   });
+   $('#trident3').click(function(){
   		alert('数字に変更しました');
   		localStorage.setItem('preset', '3');
   		location.reload()
-    });
-    $("#answer").on({
-        "input" : function(e) {
+   });
+   $("#answer").on({
+      "input" : function(e) {
          var set = localStorage.getItem('preset');
         	var str_correct = sessionStorage.getItem('magnum');
          var str_input= $(this).val()
@@ -282,10 +304,12 @@ $(function(){
         }
 	});
 });
+
 </script>
 <style type="text/css">
 #odai{
 	overflow-wrap: break-word;
+   user-select:none;
 }
 #mcheck{
 	color:#ff0000;
@@ -294,13 +318,13 @@ $(function(){
 </style>
 </head>
 <body>
-<div style="text-align: center;">
+<div style="text-align: center;" onCopy="return false" onContextMenu="return false" >
 <br>
 <br>
 <h1>４４マグナム改</h1>
 <br>
 <h1 id="odai">━━━━━━━━━━━━━━━━ここにお題が表示されます━━━━━━━━━━━━━━━━</h1>
-<input type="text" id="answer" style="width: 80%; font-size: 24px;">
+<input type="text" id="answer" style="width: 80%; font-size: 24px;" >
 <br>
 <br>
 <input type="button" id="start" value="開始" style="height:48px;width:48px;margin-right:16px">
