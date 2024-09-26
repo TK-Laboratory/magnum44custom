@@ -204,6 +204,9 @@ $(function(){
     	$('#answer').focus();
     	set = localStorage.getItem('preset');
    });
+   $('#answer').focusout(function(){
+    	$('#answer').focus();
+   });
    $('#stop').click(function(){
   		location.reload()
    });
