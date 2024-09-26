@@ -13,17 +13,26 @@ window.onload = function() {
         return array;
 	}
 	var set = localStorage.getItem('preset');
-   set = 2; //暫定対応
+
+   if( set==0 ){ //暫定対応
+		localStorage.setItem('preset', '2');
+      set = 2;
+   }
+
 	let array_omote = []
 	let array_ura = []
 
-	if(set==1 || !set){
+   if( set==0 ){
+		localStorage.setItem('preset', '2');
+   }
+
+	if(set==1 ){
 		set=1
-		localStorage.setItem('preset', '1');
 		array_omote = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
 		array_ura = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
 	}
 	else if(set==2){
+		localStorage.setItem('preset', '2');
 		array_seion = [
                      "あ","い","う","え","お",
                      "か","き","く","け","こ", "が","ぎ","ぐ","げ","ご",
