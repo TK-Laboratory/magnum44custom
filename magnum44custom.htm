@@ -3,8 +3,11 @@
 <script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
 <script type='text/javascript'>
 window.onload = function() {
-	$('#answer').attr('disabled',true);
-	$('#start').focus();
+	$('#answer').attr('readonly',true);
+	$('#answer').focus();
+	$('#stop').hide();
+	$('#start').show();
+
 	function shuffleArray(array) {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -151,6 +154,9 @@ window.onload = function() {
     	if(champ>0){
 			$('#record').text("あなたの自己記録（ひらがな）は"+champ/1000+"秒です");
 		}
+      else {
+			$('#record').text("あなたの自己記録（ひらがな）は - 秒です");
+      }
     }
     else{
     	champ = localStorage.getItem('record3');
@@ -177,7 +183,28 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     // キーイベント監視
     answer.addEventListener('keydown', (event) => {
+        	if( event.keyCode==32 ){ //Escで中断
+            let str = sessionStorage.getItem('magnum');
+            $('#odai').text(str);
+
+            str = str.replace(/空/g, " ");
+
+            sessionStorage.setItem('magnum', str);
+            $('#answer').attr('readonly',false);
+            var holster = Date.now()
+            sessionStorage.setItem('start', holster);
+            $(this).hide()
+            $(this).nextAll().hide();
+            $('#start,#mcheck').hide();
+            $('#stop,#mcheck').show();
+            $('#answer').focus();
+            set = localStorage.getItem('preset');
+
+            event.preventDefault();
+         }
         	if( event.keyCode==27 ){ //Escで中断
+            $('#stop,#mcheck').hide();
+            $('#start').show();
             location.reload();
          }
         else if( event.ctrlKey ){ //Ctrl + ～ 無効化
@@ -203,6 +230,10 @@ $(function(){
     	$('#stop,#mcheck').show();
     	$('#answer').focus();
     	set = localStorage.getItem('preset');
+   });
+
+   $('#answer').focusout(function(){
+    	$('#answer').focus();
    });
    $('#stop').click(function(){
   		location.reload()
@@ -312,6 +343,9 @@ $(function(){
 
 </script>
 <style type="text/css">
+#title{
+   user-select:none;
+}
 #odai{
 	overflow-wrap: break-word;
    user-select:none;
@@ -326,15 +360,17 @@ $(function(){
 <div style="text-align: center;" onCopy="return false" onContextMenu="return false" >
 <br>
 <br>
-<h1>４４マグナム改</h1>
+<h1 id="title">４４マグナム改</h1>
 <br>
 <h1 id="odai">━━━━━━━━━━━━━━━━ここにお題が表示されます━━━━━━━━━━━━━━━━</h1>
 <input type="text" id="answer" style="width: 80%; font-size: 24px;" autocomplete="off" >
 <br>
 <br>
-<input type="button" id="start" value="開始" style="height:48px;width:48px;margin-right:16px">
-<input type="button" id="stop" value="中断" style="height:48px;width:48px;margin-right:16px;display:none;">
-<input type="button" id="setting" value="設定" style="height:48px;width:48px;margin-right:16px">
+<h1 id="start"> Space:開始 </h1>
+<h1 id="stop"> Esc:中断 </h1>
+
+<input type="button" id="setting" value="設定" style="height:48px;width:48px;margin-right:16px" hidden="on" >
+
 <p id="record"></p>
 <p id="trident" style="display:none;"><a href="#" id="trident1" style="margin-right:16px"></a><a href='#' id="trident2" style="margin-right:16px">ひらがな</a><a href='#'  id="trident3" style="margin-right:16px"></a></p>
 <a href="https://jigendaddy.github.io/magnum44/">本家様はこちら</a>
