@@ -13,8 +13,10 @@ window.onload = function() {
         return array;
 	}
 	var set = localStorage.getItem('preset');
+   set = 2; //暫定対応
 	let array_omote = []
 	let array_ura = []
+
 	if(set==1 || !set){
 		set=1
 		localStorage.setItem('preset', '1');
