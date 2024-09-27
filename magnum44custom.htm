@@ -2,113 +2,87 @@
 <head>
 <script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
 <script type='text/javascript'>
+
+const array_seion = [
+               "あ","い","う","え","お",
+               "か","き","く","け","こ", "が","ぎ","ぐ","げ","ご",
+               "さ","し","す","せ","そ", "ざ","じ","ず","ぜ","ぞ",
+               "た","ち","つ","て","と", "だ","ぢ","づ","で","ど",
+               "な","に","ぬ","ね","の",
+               "は","ひ","ふ","へ","ほ", "ば","び","ぶ","べ","ぼ", "ぱ","ぴ","ぷ","ぺ","ぽ",
+               "ま","み","む","め","も",
+               "や","ゆ","よ",
+               "ら","り","る","れ","ろ",
+               "わ","を","ん"
+              ];
+
+
+const array_youon = [
+               "きゃ","きゅ","きょ", "ぎゃ","ぎゅ","ぎょ", 
+               "しゃ","しゅ","しょ", "じゃ","じゅ","じょ", 
+               "ちゃ","ちゅ","ちょ", "ぢゃ","ぢゅ","ぢょ",
+               "にゃ","にゅ","にょ",
+               "ひゃ","ひゅ","ひょ", "びゃ","びゅ","びょ", "ぴゃ","ぴゅ","ぴょ",
+               "みゃ","みゅ","みょ",
+               "りゃ","りゅ","りょ",
+               "しぇ","じぇ",
+               "ちぇ",
+               "つぁ","つぇ","つぉ",
+               "てぃ","でぃ",
+               "でゅ",
+               "ふぁ","ふぃ","ふぇ","ふぉ",
+               "いぇ",
+               "うぃ","うぇ","うぉ", "ヴぁ","ヴぃ","ヴ","ヴぇ","ヴぉ",
+               "ヴゅ",
+               "くぁ","くぃ","くぇ","くぉ", "ぐぉ",
+               "つぃ",
+               "てゅ",
+               "とぅ","どぅ",
+               "ふゅ"
+            ];
+
+const sokuon = "っ";
+
+const array_hisokuon = [
+               "あ","い","う","え","お",
+               "な","に","ぬ","ね","の",
+               "や","ゆ","よ",
+               "ん",
+               "にゃ","にゅ","にょ",
+              ];
+
+
+const array_mikakutei= [ "ｂ","ｃ","ｄ","ｆ","ｇ","ｈ","ｊ","ｋ","ｌ","ｍ","ｎ","ｐ","ｑ","ｒ","ｓ","ｔ","ｖ","ｗ","ｘ","ｙ","ｚ"];
+
+//ページ読み込み時
 window.onload = function() {
 	$('#answer').attr('readonly',true);
 	$('#answer').focus();
 	$('#stop').hide();
 	$('#start').show();
 
-	function shuffleArray(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
-        }
-        return array;
-	}
-
+   //プリセット選択
 	var set = localStorage.getItem('preset');
-
-	let array_omote = []
-	let array_ura = []
-
-
-	if(set==1 ){
-		set=1
-		array_omote = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
-		array_ura = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
-	}
-	else if(set==2 || !set ){
+	if( !set ){
       set = 2;
-		localStorage.setItem('preset', '2');
-		array_seion = [
-                     "あ","い","う","え","お",
-                     "か","き","く","け","こ", "が","ぎ","ぐ","げ","ご",
-                     "さ","し","す","せ","そ", "ざ","じ","ず","ぜ","ぞ",
-                     "た","ち","つ","て","と", "だ","ぢ","づ","で","ど",
-                     "な","に","ぬ","ね","の",
-                     "は","ひ","ふ","へ","ほ", "ば","び","ぶ","べ","ぼ", "ぱ","ぴ","ぷ","ぺ","ぽ",
-                     "ま","み","む","め","も",
-                     "や","ゆ","よ",
-                     "ら","り","る","れ","ろ",
-                     "わ","を","ん"
-                    ]
-
-
-		array_youon = [
-                     "きゃ","きゅ","きょ", "ぎゃ","ぎゅ","ぎょ", 
-                     "しゃ","しゅ","しょ", "じゃ","じゅ","じょ", 
-                     "ちゃ","ちゅ","ちょ", "ぢゃ","ぢゅ","ぢょ",
-                     "にゃ","にゅ","にょ",
-                     "ひゃ","ひゅ","ひょ", "びゃ","びゅ","びょ", "ぴゃ","ぴゅ","ぴょ",
-                     "みゃ","みゅ","みょ",
-                     "りゃ","りゅ","りょ",
-                     "しぇ","じぇ",
-                     "ちぇ",
-                     "つぁ","つぇ","つぉ",
-                     "てぃ","でぃ",
-                     "でゅ",
-                     "ふぁ","ふぃ","ふぇ","ふぉ",
-                     "いぇ",
-                     "うぃ","うぇ","うぉ", "ヴぁ","ヴぃ","ヴ","ヴぇ","ヴぉ",
-                     "ヴゅ",
-                     "くぁ","くぃ","くぇ","くぉ", "ぐぉ",
-                     "つぃ",
-                     "てゅ",
-                     "とぅ","どぅ",
-                     "ふゅ"
-                  ] 
-
-		array_hisokuon = [
-                     "あ","い","う","え","お",
-                     "な","に","ぬ","ね","の",
-                     "や","ゆ","よ",
-                     "ん",
-                     "にゃ","にゅ","にょ",
-                    ]
-
-      array_mikakutei= [ "ｂ","ｃ","ｄ","ｆ","ｇ","ｈ","ｊ","ｋ","ｌ","ｍ","ｎ","ｐ","ｑ","ｒ","ｓ","ｔ","ｖ","ｗ","ｘ","ｙ","ｚ"]
-
+      localStorage.setItem('preset', set);
 	}
-	else{
-		array_omote = ["1","2","3","4","5","6","7","8","9","0"]
-	}
-	array_omote = array_omote.filter(Boolean);
-	array_ura = array_ura.filter(Boolean);
+
+   //お題生成
 	var str = '';
 	var tmp = '';
    var prev = '';
 	var train = 0
 	var maxTypingLength = 44
-	shuffleArray(array_omote)
-	shuffleArray(array_ura)
+
 	while (train < maxTypingLength) {
       var num;
-      if( set!=2 ){
-		   num = Math.floor(Math.random() * 4);
-         if(num==1 && set!=3){
-            num = Math.floor(Math.random() * array_ura.length);
-            tmp= array_ura[num]
-         }
-         else{
-            num = Math.floor(Math.random() * array_omote.length);
-            tmp= array_omote[num]
-         }
-      }
-      else if( set=2 ){
+
+      if( set=2 ){
 		   num = Math.floor(Math.random() * 100);
 
-         if( num < 20 && prev != "っ" ){
-            tmp = "っ";
+         if( num < 20 && prev != sokuon ){
+            tmp = sokuon;
          }
          else {
             do{
@@ -132,16 +106,10 @@ window.onload = function() {
 		if (train == maxTypingLength) {
     		break;
  		}
-
-      if( set!=2 ){
-         num = Math.floor(Math.random() * (array_omote.length+array_ura.length));
-         if(num==1){
-            str = str + '空'
-            train++
-         }
-      }
 	}
 	sessionStorage.setItem('magnum', str);
+
+   //自己ベスト
 	let champ = 0
 	if(set==1){
     	champ = localStorage.getItem('record1');
@@ -166,39 +134,41 @@ window.onload = function() {
     }
 }
 
+//イベント監視
 document.addEventListener('DOMContentLoaded', (event) => {
     const answer = document.getElementById('answer');
 
+    //フォーカスアウトを無効化
+    answer.addEventListener('focusout', (event) => {
+       answer.focus();
+    });
+
     //マウスイベント監視
     answer.addEventListener('dragover', (event) => {
-  		  //alert('ドラッグ操作はできません');
         event.preventDefault();
     });
 
     // ドロップイベントを無効化する
     answer.addEventListener('drop', (event) => {
-  		  //alert('ドロップ操作はできません');
         event.preventDefault();
     });
 
     // キーイベント監視
     answer.addEventListener('keydown', (event) => {
-        	if( event.keyCode==32 ){ //Escで中断
+        	if( event.keyCode==32 ){ //Spaceで開始
             let str = sessionStorage.getItem('magnum');
             $('#odai').text(str);
 
-            str = str.replace(/空/g, " ");
-
             sessionStorage.setItem('magnum', str);
             $('#answer').attr('readonly',false);
+
             var holster = Date.now()
             sessionStorage.setItem('start', holster);
             $(this).hide()
             $(this).nextAll().hide();
-            $('#start,#mcheck').hide();
+            $('#start').hide();
             $('#stop,#mcheck').show();
-            $('#answer').focus();
-            set = localStorage.getItem('preset');
+            answer.focus();
 
             event.preventDefault();
          }
@@ -208,54 +178,13 @@ document.addEventListener('DOMContentLoaded', (event) => {
             location.reload();
          }
         else if( event.ctrlKey ){ //Ctrl + ～ 無効化
-  		     //alert('Ctrlキーを用いたショートカットキーは使用できません');
            event.preventDefault();
         }
     });
 });
 
+//関数定義
 $(function(){
-   $('#start').click(function(){
-  		let str = sessionStorage.getItem('magnum');
-    	$('#odai').text(str);
-
-  		str = str.replace(/空/g, " ");
-
-  		sessionStorage.setItem('magnum', str);
-    	$('#answer').attr('disabled',false);
-    	var holster = Date.now()
-    	sessionStorage.setItem('start', holster);
-    	$(this).hide()
-    	$(this).nextAll().hide();
-    	$('#stop,#mcheck').show();
-    	$('#answer').focus();
-    	set = localStorage.getItem('preset');
-   });
-
-   $('#answer').focusout(function(){
-    	$('#answer').focus();
-   });
-   $('#stop').click(function(){
-  		location.reload()
-   });
-   $('#setting').click(function(){
-  		$('#trident').show();
-   });
-   $('#trident1').click(function(){
-  		alert('デフォルトに変更しました');
-  		localStorage.setItem('preset', '1');
-  		location.reload()
-   });
-   $('#trident2').click(function(){
-  		alert('ひらがなに変更しました');
-  		localStorage.setItem('preset', '2');
-  		location.reload()
-   });
-   $('#trident3').click(function(){
-  		alert('数字に変更しました');
-  		localStorage.setItem('preset', '3');
-  		location.reload()
-   });
    $("#answer").on({
       "input" : function(e) {
          var set = localStorage.getItem('preset');
