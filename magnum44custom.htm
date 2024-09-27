@@ -62,7 +62,7 @@ window.onload = function() {
 	$('#start').show();
 
    //プリセット選択
-	var set = localStorage.getItem('preset');
+	set = localStorage.getItem('preset');
 	if( !set ){
       set = 2;
       localStorage.setItem('preset', set);
@@ -78,7 +78,7 @@ window.onload = function() {
 	while (train < maxTypingLength) {
       var num;
 
-      if( set=2 ){
+      if( set==2 ){
 		   num = Math.floor(Math.random() * 100);
 
          if( num < 20 && prev != sokuon ){
