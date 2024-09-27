@@ -68,46 +68,6 @@ window.onload = function() {
       localStorage.setItem('preset', set);
 	}
 
-   //お題生成
-	var str = '';
-	var tmp = '';
-   var prev = '';
-	var train = 0
-	var maxTypingLength = 44
-
-	while (train < maxTypingLength) {
-      var num;
-
-      if( set==2 ){
-		   num = Math.floor(Math.random() * 100);
-
-         if( num < 20 && prev != sokuon ){
-            tmp = sokuon;
-         }
-         else {
-            do{
-               num = Math.floor(Math.random() * 100);
-               if( num < 20 && train != maxTypingLength - 1  ){
-                  num = Math.floor(Math.random() * array_youon.length);
-                  tmp= array_youon[num]
-               }
-               else{
-                  num = Math.floor(Math.random() * array_seion.length);
-                  tmp= array_seion[num]
-               }
-            }while( prev == "っ" && array_hisokuon.includes( tmp ) );
-         }
-      }
-
-      train = train + tmp.length 
-		str = str + tmp
-      prev = tmp; 
-
-		if (train == maxTypingLength) {
-    		break;
- 		}
-	}
-	sessionStorage.setItem('magnum', str);
 
    //自己ベスト
 	let champ = 0
@@ -156,10 +116,47 @@ document.addEventListener('DOMContentLoaded', (event) => {
     // キーイベント監視
     answer.addEventListener('keydown', (event) => {
         	if( event.keyCode==32 ){ //Spaceで開始
-            let str = sessionStorage.getItem('magnum');
-            $('#odai').text(str);
+            //お題生成
+            var str = '';
+            var tmp = '';
+            var prev = '';
+            var train = 0
+            var maxTypingLength = 44
 
+            while (train < maxTypingLength) {
+               var num;
+
+               num = Math.floor(Math.random() * 100);
+
+               if( num < 20 && prev != sokuon ){
+                  tmp = sokuon;
+               }
+               else {
+                  do{
+                     num = Math.floor(Math.random() * 100);
+                     if( num < 20 && train != maxTypingLength - 1  ){
+                        num = Math.floor(Math.random() * array_youon.length);
+                        tmp= array_youon[num]
+                     }
+                     else{
+                        num = Math.floor(Math.random() * array_seion.length);
+                        tmp= array_seion[num]
+                     }
+                  }while( prev == "っ" && array_hisokuon.includes( tmp ) );
+               }
+
+               train = train + tmp.length 
+               str = str + tmp
+               prev = tmp; 
+
+               if (train == maxTypingLength) {
+                  break;
+               }
+            }
             sessionStorage.setItem('magnum', str);
+
+            //お題セット
+            $('#odai').text(str);
             $('#answer').attr('readonly',false);
 
             var holster = Date.now()
