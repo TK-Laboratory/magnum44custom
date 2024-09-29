@@ -206,8 +206,8 @@ $(function(){
    $("#answer").on({
       "input" : function(e) {
          var set = localStorage.getItem('preset');
-        	var str_correct = sessionStorage.getItem('magnum');
-         var str_input= $(this).val()
+         var str_correct = sessionStorage.getItem('magnum');
+         var str_input= $(this).val().replace( "ゔ","ヴ" ); 
 
         	if(str_correct!=str_input){
 
