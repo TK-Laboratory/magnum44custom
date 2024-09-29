@@ -124,9 +124,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
     answer.addEventListener('keydown', (event) => {
          process = sessionStorage.getItem( 'process' );
 
-        	if( event.keyCode==32 ){ //Spaceで開始
-
-            if( process == PROCESS_READY ){
+         if( process == PROCESS_READY ){
+            if( event.keyCode==32 ){ //Spaceで開始
 
                //お題生成
                var str = '';
@@ -185,17 +184,31 @@ document.addEventListener('DOMContentLoaded', (event) => {
                event.preventDefault();
             }
          }
-        	else if( event.keyCode==27 ){ 
-            if( process == PROCESS_RUNNING ){
+         else if( process == PROCESS_RUNNING ){
+            if( event.keyCode==27 ){ //Escで中断
                location.reload();
             } 
          }
-        	else if( event.keyCode==82 ){ 
-            if( process == PROCESS_WAIT ){
+         else if( process == PROCESS_WAIT ){
+            if( event.keyCode==82 ){ //R でリトライ
                location.reload();
             } 
+            if( event.keyCode==88 ){ //X でツイート
+               twitter = "https://x.com/intent/post?";
+               url = "https://tk-laboratory.github.io/magnum44custom/magnum44custom.htm";
+               hashtags = "４４マグナム,４４マグナム改";
+
+               record = sessionStorage.getItem('record');
+
+               text = "４４マグナム改（ひらがな）のタイムは" + record / 1000 + "秒でした！" + "%0a";
+
+               tweet = twitter + "url=" + url + "&hashtags=" + hashtags + "&text=" + text;
+
+               window.open( tweet, "_blank" );
+            } 
          }
-        else if( event.ctrlKey ){ //Ctrl + ～ 無効化
+
+        if( event.ctrlKey ){ //Ctrl + ～ 無効化
            event.preventDefault();
         }
     });
@@ -241,7 +254,9 @@ $(function(){
                sessionStorage.setItem('end', holster);
                var time_start = sessionStorage.getItem('start');
                var time_end = sessionStorage.getItem('end');
-               var record = time_end - time_start
+               var record = time_end - time_start;
+               sessionStorage.setItem( 'record', record );
+
                if(set==1){
                   champ = localStorage.getItem('record1');
                }
@@ -327,7 +342,7 @@ $(function(){
 <br>
 <h1 id="start"> Space:開始 </h1>
 <h1 id="stop"> Esc:中断 </h1>
-<h1 id="retry"> R:もう一度 </h1>
+<h1 id="retry"> R:もう一度遊ぶ　X:結果をツイート</h1>
 
 <input type="button" id="setting" value="設定" style="height:48px;width:48px;margin-right:16px" hidden="on" >
 
