@@ -54,11 +54,16 @@ const array_hisokuon = [
 
 const array_mikakutei= [ "ｂ","ｃ","ｄ","ｆ","ｇ","ｈ","ｊ","ｋ","ｌ","ｍ","ｎ","ｐ","ｑ","ｒ","ｓ","ｔ","ｖ","ｗ","ｘ","ｙ","ｚ"];
 
+const PROCESS_READY = 0;
+const PROCESS_RUNNING = 1;
+const PROCESS_WAIT = 2;
+
 //ページ読み込み時
 window.onload = function() {
+
 	$('#answer').attr('readonly',true);
 	$('#answer').focus();
-	$('#stop').hide();
+	$('#stop,#retry').hide();
 	$('#start').show();
 
    //プリセット選択
@@ -85,13 +90,15 @@ window.onload = function() {
       else {
 			$('#record').text("あなたの自己記録（ひらがな）は - 秒です");
       }
-    }
+   }
     else{
     	champ = localStorage.getItem('record3');
     	if(champ>0){
 			$('#record').text("あなたの自己記録（数字）は"+champ/1000+"秒です");
 		}
     }
+
+   sessionStorage.setItem('process', PROCESS_READY );
 }
 
 //イベント監視
@@ -115,64 +122,78 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     // キーイベント監視
     answer.addEventListener('keydown', (event) => {
+         process = sessionStorage.getItem( 'process' );
+
         	if( event.keyCode==32 ){ //Spaceで開始
-            //お題生成
-            var str = '';
-            var tmp = '';
-            var prev = '';
-            var train = 0
-            var maxTypingLength = 44
 
-            while (train < maxTypingLength) {
-               var num;
+            if( process == PROCESS_READY ){
 
-               num = Math.floor(Math.random() * 100);
+               //お題生成
+               var str = '';
+               var tmp = '';
+               var prev = '';
+               var train = 0
+               var maxTypingLength = 44
 
-               if( num < 20 && prev != sokuon ){
-                  tmp = sokuon;
+               while (train < maxTypingLength) {
+                  var num;
+
+                  num = Math.floor(Math.random() * 100);
+
+                  if( num < 20 && prev != sokuon ){
+                     tmp = sokuon;
+                  }
+                  else {
+                     do{
+                        num = Math.floor(Math.random() * 100);
+                        if( num < 20 && train != maxTypingLength - 1  ){
+                           num = Math.floor(Math.random() * array_youon.length);
+                           tmp= array_youon[num]
+                        }
+                        else{
+                           num = Math.floor(Math.random() * array_seion.length);
+                           tmp= array_seion[num]
+                        }
+                     }while( prev == "っ" && array_hisokuon.includes( tmp ) );
+                  }
+
+                  train = train + tmp.length 
+                  str = str + tmp
+                  prev = tmp; 
+
+                  if (train == maxTypingLength) {
+                     break;
+                  }
                }
-               else {
-                  do{
-                     num = Math.floor(Math.random() * 100);
-                     if( num < 20 && train != maxTypingLength - 1  ){
-                        num = Math.floor(Math.random() * array_youon.length);
-                        tmp= array_youon[num]
-                     }
-                     else{
-                        num = Math.floor(Math.random() * array_seion.length);
-                        tmp= array_seion[num]
-                     }
-                  }while( prev == "っ" && array_hisokuon.includes( tmp ) );
-               }
+               sessionStorage.setItem('magnum', str);
 
-               train = train + tmp.length 
-               str = str + tmp
-               prev = tmp; 
+               //お題セット
+               $('#odai').text(str);
+               $('#answer').attr('readonly',false);
 
-               if (train == maxTypingLength) {
-                  break;
-               }
+               var holster = Date.now()
+               sessionStorage.setItem('start', holster);
+               $(this).hide()
+               $(this).nextAll().hide();
+               $('#start').hide();
+               $('#stop,#mcheck').show();
+
+               sessionStorage.setItem( 'process', PROCESS_RUNNING );
+
+               answer.focus();
+
+               event.preventDefault();
             }
-            sessionStorage.setItem('magnum', str);
-
-            //お題セット
-            $('#odai').text(str);
-            $('#answer').attr('readonly',false);
-
-            var holster = Date.now()
-            sessionStorage.setItem('start', holster);
-            $(this).hide()
-            $(this).nextAll().hide();
-            $('#start').hide();
-            $('#stop,#mcheck').show();
-            answer.focus();
-
-            event.preventDefault();
          }
-        	if( event.keyCode==27 ){ //Escで中断
-            $('#stop,#mcheck').hide();
-            $('#start').show();
-            location.reload();
+        	else if( event.keyCode==27 ){ 
+            if( process == PROCESS_RUNNING ){
+               location.reload();
+            } 
+         }
+        	else if( event.keyCode==82 ){ 
+            if( process == PROCESS_WAIT ){
+               location.reload();
+            } 
          }
         else if( event.ctrlKey ){ //Ctrl + ～ 無効化
            event.preventDefault();
@@ -185,8 +206,8 @@ $(function(){
    $("#answer").on({
       "input" : function(e) {
          var set = localStorage.getItem('preset');
-        	var str_correct = sessionStorage.getItem('magnum');
-         var str_input= $(this).val()
+         var str_correct = sessionStorage.getItem('magnum');
+         var str_input= $(this).val().replace( "ゔ","ヴ" ); 
 
         	if(str_correct!=str_input){
 
@@ -214,6 +235,8 @@ $(function(){
             	}
             }
             else{
+               sessionStorage.setItem('process', PROCESS_WAIT );
+
             	holster = Date.now()
                sessionStorage.setItem('end', holster);
                var time_start = sessionStorage.getItem('start');
@@ -242,7 +265,7 @@ $(function(){
                   }
                   var result = window.confirm('あなたのタイムは' + record / 1000 +'秒です');
                   if(result){
-                     location.reload()
+                     //location.reload()
                   }
                }
                else{
@@ -258,10 +281,18 @@ $(function(){
                   alert('自己記録更新です')
                   var result = window.confirm('あなたのタイムは' + record / 1000 +'秒です');
                   if(result){
-                     location.reload()
+                     //location.reload()
                   }
                }
     			
+	            $('#answer').attr('disabled',true);
+	            $('#answer').attr('disabled',false);
+	            $('#answer').attr('readonly',true);
+	            $('#answer').focus();
+
+               $('#stop').hide();
+               $('#retry').show();
+
             }
         }
 	});
@@ -271,10 +302,12 @@ $(function(){
 <style type="text/css">
 #title{
    user-select:none;
+   font-size:32;
 }
 #odai{
 	overflow-wrap: break-word;
    user-select:none;
+   font-size:24;
 }
 #mcheck{
 	color:#ff0000;
@@ -289,11 +322,12 @@ $(function(){
 <h1 id="title">４４マグナム改</h1>
 <br>
 <h1 id="odai">━━━━━━━━━━━━━━━━ここにお題が表示されます━━━━━━━━━━━━━━━━</h1>
-<input type="text" id="answer" style="width: 80%; font-size: 24px;" autocomplete="off" >
+<input type="text" id="answer" style="width: 85%; font-size: 24px;" autocomplete="off" >
 <br>
 <br>
 <h1 id="start"> Space:開始 </h1>
 <h1 id="stop"> Esc:中断 </h1>
+<h1 id="retry"> R:もう一度 </h1>
 
 <input type="button" id="setting" value="設定" style="height:48px;width:48px;margin-right:16px" hidden="on" >
 
